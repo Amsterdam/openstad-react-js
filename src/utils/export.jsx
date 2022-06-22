@@ -9,7 +9,7 @@ export function exporter({ rows, fields, filename = 'data', type = 'csv' }) {
 
   rows = [...rows];
 
-  fields = [...fields] || Object.keys( rows[0] );
+  fields = fields ? [...fields] :  Object.keys( rows[0] );
   let index = fields.indexOf('site'); // 'site' may be included in the object, but should generally not be included in the export
   if (index > -1) fields.splice(index, 1);
   index = fields.indexOf('can'); // 'can' may be included in the object, but should never be included in the export
