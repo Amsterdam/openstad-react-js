@@ -253,7 +253,7 @@ export const IdeaList = (props) => {
       >
         <Datagrid>
           <TextField source="id"/>
-          <ImageField source="extraData.images[0]" label="Image"/>
+          <ImageField source="extraData.images[0]" label="Image" style={{ 'max-width': '200px', overflow: 'hidden' }}/>
           <TextField source="title"/>
           <TextField source="status"/>
           <TextField source="yes"/>
