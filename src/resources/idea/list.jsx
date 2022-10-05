@@ -94,8 +94,7 @@ const exporter = ( rows, type = 'csv' ) => {
     XLSX.writeFile(wb, filename);
 
   } else if(type == 'pdf'){
-    let data = rowsForExport;
-    const docDefinition = PdfDocDefinition.createDefinition(data);
+    const docDefinition = PdfDocDefinition.createDefinition(rowsForExport);
     pdfMake.createPdf(docDefinition).print({}, window.open('', '_blank'));
   }else {
 

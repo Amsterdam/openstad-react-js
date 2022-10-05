@@ -1,5 +1,3 @@
-import { _ } from "core-js";
-
 export default class PdfDocDefinition {
 
     static createDefinition(ideas) {
