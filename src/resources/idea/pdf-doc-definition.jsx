@@ -4,7 +4,7 @@ export default class PdfDocDefinition {
 
     static createDefinition(ideas) {
         const images = {};
-        const publishedIdeas = ideas.filter((idea) => idea.publishedDate);
+        const publishedIdeas = ideas.filter((idea) => idea.publishDate);
         
         publishedIdeas.forEach(idea => {
             try {
