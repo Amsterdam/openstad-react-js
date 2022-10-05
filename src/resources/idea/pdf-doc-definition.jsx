@@ -30,7 +30,6 @@ export default class PdfDocDefinition {
         };
 
         publishedIdeas.forEach((idea, index) => {
-
             result.content.push(
                 {
                     text: idea.title,
@@ -60,7 +59,6 @@ export default class PdfDocDefinition {
                     .replace(/<br \/>/ig, "")
                     .replace(/<\/div>/ig, "")
                     .replace(/<div>/ig, ""),
-
                     margin: [0,0,0,32],
                 },
                 idea['extraData.theme']? {
@@ -83,7 +81,7 @@ export default class PdfDocDefinition {
 
             Object.keys(idea).filter(key => key.startsWith("extraData") && key !== "extraData.phone" && key !== "extraData.theme" && key !== "extraData.area")
             .forEach(key => {
-                result.content.push(idea[key]? {text: `${key}1: ${idea[key]}`, margin: [0,0,0,4]}: null)
+                result.content.push(idea[key]? {text: `${key}: ${idea[key]}`, margin: [0,0,0,4]}: null)
             });
 
             result.content.push( index < ideas.length -1 ? {
