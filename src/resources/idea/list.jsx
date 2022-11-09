@@ -275,7 +275,7 @@ export const IdeaList = (props) => {
           <TextField source="yes"/>
           <TextField source="no"/>
           <DateField source="createdAt"/>
-          <DateField source="publishDate"/>
+          <DateField emptyText='[concept]' source="publishDate"/>
           <EditButton basePath="/idea"/>
         </Datagrid>
       </List>
