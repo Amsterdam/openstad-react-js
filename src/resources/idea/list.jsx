@@ -267,7 +267,7 @@ export const IdeaList = (props) => {
             empty={<Empty/>}
             pagination={<IdeaPagination />}
       >
-        <Datagrid>
+        <Datagrid >
           <TextField source="id"/>
           <ImageField source="extraData.images[0]" label="Image" style={{ 'max-width': '200px', overflow: 'hidden' }}/>
           <TextField source="title"/>
@@ -275,7 +275,7 @@ export const IdeaList = (props) => {
           <TextField source="yes"/>
           <TextField source="no"/>
           <DateField source="createdAt"/>
-          <DateField source="publishDate"/>
+          <DateField emptyText='[concept]' source="publishDate"/>
           <EditButton basePath="/idea"/>
         </Datagrid>
       </List>
