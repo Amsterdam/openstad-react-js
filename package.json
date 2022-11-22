@@ -1,7 +1,7 @@
 {
   "name": "openstad-react-admin",
   "homepage": "https://github.com/Amsterdam/openstad-react-admin",
-  "version": "0.40.0",
+  "version": "1.0.0",
   "private": false,
   "publishConfig": {
     "access": "public"
