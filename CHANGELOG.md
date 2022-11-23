@@ -1,6 +1,12 @@
 # Changelog
 
-## v0.40.0
+## 1.0.0
+* Download ideas as pdf
+* Upgrade to node 16
+* Update/cleanup access rights for moderators and editors
+* Bugfix: broken exports
+
+## 0.40.0
 Update version number
 
 ## 0.37.1

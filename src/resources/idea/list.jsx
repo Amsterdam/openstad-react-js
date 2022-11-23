@@ -27,6 +27,10 @@ import {CustomList as List} from '../../components/CustomList/index.jsx';
 import { parseRowsForExport } from '../../utils/export.jsx';
 
 import XLSX from 'xlsx';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import PdfDocDefinition from './pdf-doc-definition.jsx';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const IdeaPagination = props => <Pagination rowsPerPageOptions={[10, 25, 50, 100]} {...props} />;
 
@@ -89,7 +93,10 @@ const exporter = ( rows, type = 'csv' ) => {
 
     XLSX.writeFile(wb, filename);
 
-  } else {
+  } else if(type == 'pdf'){
+    const docDefinition = PdfDocDefinition.createDefinition(rowsForExport);
+    pdfMake.createPdf(docDefinition).print({}, window.open('', '_blank'));
+  }else {
 
     jsonExport(rowsForExport, {headers: ['id', 'title', 'description']}, (err, csv) => {
       downloadCSV(csv, 'ideas');
@@ -165,6 +172,15 @@ export const ListActions = props => {
         resource={resource}
         sort={currentSort}
         label="Export xlsx"
+        filter={{...filterValues, ...permanentFilter}}
+      />
+      <ExportButton
+        exporter={rows => exporter(rows, 'pdf')}
+        disabled={total === 0}
+        maxResults={100000}
+        resource={resource}
+        sort={currentSort}
+        label="Export pdf"
         filter={{...filterValues, ...permanentFilter}}
       />
       <ImportButton resource={resource}/>
@@ -253,12 +269,13 @@ export const IdeaList = (props) => {
       >
         <Datagrid>
           <TextField source="id"/>
-          <ImageField source="extraData.images[0]" label="Image"/>
+          <ImageField source="extraData.images[0]" label="Image" style={{ 'max-width': '200px', overflow: 'hidden' }}/>
           <TextField source="title"/>
           <TextField source="status"/>
           <TextField source="yes"/>
           <TextField source="no"/>
           <DateField source="createdAt"/>
+          <DateField emptyText='[concept]' source="publishDate"/>
           <EditButton basePath="/idea"/>
         </Datagrid>
       </List>

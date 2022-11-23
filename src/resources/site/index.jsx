@@ -84,7 +84,7 @@ const AutomaticallyUpdateStatusInput = ({source, record}) => {
 const ProjectHasEndedInput = ({source, record}) => {
 
   let warningsHTML = null;
-  if (record.config.projectHasEnded) {
+  if (record.config.project.projectHasEnded) {
     let warnings = [];
     if (record.config.votes.isActive !== false) warnings.push( 'votes.isActive is not false' );
     if (record.config.ideas.canAddNewIdeas !== false) warnings.push( 'ideas.canAddNewIdeas is not false' );
@@ -106,7 +106,7 @@ const ProjectHasEndedInput = ({source, record}) => {
       {/* Het wordt tijd voor een taal switch... */}
       <div fullWidth>Setting the 'Project has ended' parameter will automatically update 'Can add new ideas', 'Votes are active', etc.</div>
       {warningsHTML}
-      <BooleanInput source="config.projectHasEnded" label="Project has ended" fullWidth initialValue={false} variant="outlined" />
+      <BooleanInput source="config.project.projectHasEnded" label="Project has ended" fullWidth initialValue={false} variant="outlined" />
     </div>
   );
 
@@ -123,7 +123,7 @@ export const SiteEdit = (props) => {
           <BooleanInput source="config.users.canCreateNewUsers" label="New users can log in?" fullWidth initialValue={true}  variant="outlined" />
           <BooleanInput source="config.users.allowUseOfNicknames" label="Can users create an alias?" fullWidth initialValue={true}  variant="outlined" />
           <BooleanInput source="config.articles.canAddNewArticles" label="Possible to send in articles?" fullWidth initialValue={true}  variant="outlined" />
-          <ProjectHasEndedInput source="config.projectHasEnded"/>
+          <ProjectHasEndedInput source="config.project.projectHasEnded"/>
         </FormTab>
         <FormTab label="Ideas">
           <BooleanInput source="config.ideas.canAddNewIdeas" label="Possible to send in ideas?" fullWidth initialValue={true}  variant="outlined" />
