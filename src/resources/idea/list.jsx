@@ -1,7 +1,7 @@
 import React, {Fragment, cloneElement, useState, useEffect} from 'react';
 import {
   Datagrid, Filter, DateField, EditButton, ImageField, TextInput, TextField, TopToolbar,
-  downloadCSV, useListContext, BulkDeleteButton, SimpleForm, SaveButton
+  downloadCSV, useListContext, BulkDeleteButton, SimpleForm, useRecordContext
 } from 'react-admin';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -12,6 +12,7 @@ import {Button} from 'react-admin';
 import ContentCreate from '@material-ui/icons/Create';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   SelectInput,
   useUpdateMany,
@@ -57,12 +58,11 @@ const useStyles = makeStyles(
   {name: 'RaEmpty'}
 );
 
-const exporter = ( rows, type = 'csv' ) => {
+const exporter = async ( rows, type = 'csv' ) => {
 
   rows = [...rows];
 
   let rowsForExport = rows.map(row => {
-
     const {backlinks, author, ...rowForExport} = row; // omit backlinks and author
     if (rowForExport.can) {
       delete rowForExport.can;
@@ -94,7 +94,7 @@ const exporter = ( rows, type = 'csv' ) => {
     XLSX.writeFile(wb, filename);
 
   } else if(type == 'pdf'){
-    const docDefinition = PdfDocDefinition.createDefinition(rowsForExport);
+    const docDefinition = await PdfDocDefinition.createDefinition(rowsForExport);
     pdfMake.createPdf(docDefinition).print({}, window.open('', '_blank'));
   }else {
 
@@ -255,6 +255,15 @@ const IdeaFilters = (props) => (
   </Filter>
 );
 
+const ExportRowButton = (props) => {
+  const record = useRecordContext();
+  return (  
+  <Button {...props} disabled={props.disabled(record)} onClick={() =>props.onClick(record)}>
+    <GetAppIcon />
+  </Button>);
+
+}
+
 export const IdeaList = (props) => {
   return (
     <Fragment>
@@ -276,7 +285,8 @@ export const IdeaList = (props) => {
           <TextField source="no"/>
           <DateField source="createdAt"/>
           <DateField emptyText='[concept]' source="publishDate"/>
-          <EditButton basePath="/idea"/>
+          <EditButton label='Edit' basePath="/idea"/>
+          <ExportRowButton disabled={(idea)=>!idea.publishDate} onClick={(idea) => {exporter([idea], 'pdf')}}/>
         </Datagrid>
       </List>
     </Fragment>
