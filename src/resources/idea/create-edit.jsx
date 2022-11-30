@@ -54,17 +54,16 @@ const Form = (props) => (
         perPage={25}
         filterToQuery={searchText => ({ email: {'substring': searchText} })}
         filter={{ role: {'!=': 'anonymous'} }}
-        sort={{ field: 'email', order: 'ASC' }}
       >
           <AutocompleteInput optionText="email" />
       </ReferenceInput>
       <TextInput source="title" variant="outlined" fullWidth/>
       <TextInput source="summary" options={{ multiLine: true }} variant="outlined" fullWidth validate={[required()]} />
       <TextInput multiline source="description" variant="outlined" fullWidth validate={[required()]}/>
+      <FileUpload resourceProps={props} imageApiUrl={props.options.imageApiUrl}/>
       <ReferenceArrayInput label="tags" source="tags" reference="tag" variant="outlined">
         <SelectArrayInput optionText="name"/>
       </ReferenceArrayInput>
-      <FileUpload resourceProps={props} imageApiUrl={props.options.imageApiUrl}/>
     </FormTab>
     <FormTab label=" Extradata">
       {props.edit && <TextInput disabled source="id"/>}
