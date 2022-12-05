@@ -79,7 +79,7 @@ export default class PdfDocDefinition {
                     margin: [0,0,0,16]
                 }:null,
                 idea.resolvedLocation? {
-                    text: `Locatie: ${idea.resolvedLocation.quarter}  ${idea.resolvedLocation.postcode} ${idea.resolvedLocation.city}`,
+                    text: `Locatie: ${idea.resolvedLocation.quarter ?? 'Straat onbekend'}  ${idea.resolvedLocation.postcode ?? 'Postcode onbekend'} ${idea.resolvedLocation.city ?? 'Stad onbekend'}`,
                     margin: [0,0,0,4]
                 }:null,
                 idea.tags? {
