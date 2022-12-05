@@ -1,9 +1,9 @@
 export default class PdfDocDefinition {
 
-    static createDefinition(ideas) {
+    static async createDefinition(ideas) {
         const images = {};
         const publishedIdeas = ideas.filter((idea) => idea.publishDate);
-        
+
         publishedIdeas.forEach(idea => {
             try {
                 if(idea['extraData.images'] && idea['extraData.images'] !== '[]') {
@@ -13,6 +13,7 @@ export default class PdfDocDefinition {
 
             }
         });
+        
         
         let result = {
             pageSize: 'A4',
@@ -27,6 +28,8 @@ export default class PdfDocDefinition {
             images
         };
 
+        await this._setResolvedLocation(publishedIdeas);
+        
         publishedIdeas.forEach((idea, index) => {
             result.content.push(
                 {
@@ -75,6 +78,14 @@ export default class PdfDocDefinition {
                     text: `Email: ${idea['user.email']}`,
                     margin: [0,0,0,16]
                 }:null,
+                idea.resolvedLocation? {
+                    text: `Locatie: ${idea.resolvedLocation.quarter ?? 'Straat onbekend'}  ${idea.resolvedLocation.postcode ?? 'Postcode onbekend'} ${idea.resolvedLocation.city ?? 'Stad onbekend'}`,
+                    margin: [0,0,0,4]
+                }:null,
+                idea.tags? {
+                    text: `Tags: ${idea.tags.map(tag => tag.name).join(', ')}`,
+                    margin: [0,0,0,4]
+                }:null,
             );
 
             Object.keys(idea).filter(key => key.startsWith("extraData") && key !== "extraData.phone" && key !== "extraData.theme" && key !== "extraData.area")
@@ -88,5 +99,26 @@ export default class PdfDocDefinition {
             }: null);
         });
         return result;
+    }
+
+
+    static async _setResolvedLocation(ideas) {
+        for (const idea of ideas) {
+            let location = null;
+
+            if(idea.location) {
+                try {
+                    location = JSON.parse(idea.location);
+                } catch(error) {
+                    console.error(`Could not translate location: ${error}`);
+                }    
+
+                if(location) {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=geojson&addressdetails=1&accept-language=nl&countrycodes=nl&lat=${location.coordinates[0]}&lon=${location.coordinates[1]}`);
+                    const resolvedLocation = await response.json();
+                    idea.resolvedLocation = {...resolvedLocation?.features?.[0]?.properties?.address};
+                }
+            }
+        }
     }
 };
