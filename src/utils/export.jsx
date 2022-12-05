@@ -63,7 +63,7 @@ export function parseRowsForExport(rows) {
   rows = rows.map(row => {
     Object.keys(row).forEach(key => {
       let field = row[key]
-      if (field && typeof field == 'object') {
+      if (field && typeof field == 'object' && !Array.isArray(field)) {
         Object.keys(field).forEach(fieldkey => {
           let value = field[fieldkey];
           if (typeof value == 'object') {
