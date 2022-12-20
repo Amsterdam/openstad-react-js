@@ -99,13 +99,12 @@ export const ImportButton = (props) => {
     const cleanUp = function (value, key, parentValues) {
       if (value && typeof value === 'object' && !exceptionsObjectKeys.includes(key)) {
 
-        const keys = Object.keys(value);
-        for (const key of keys) {
+        Object.keys(value).forEach(key => {
           // in case value is empty ont send it, many values will fail on empty string
           // for instance int types
           // this might cause issue when wanting to empty a field
           cleanUp(value[key], key, value)
-        };
+        });
       } else {
         if (!value || removeKeys.includes(key)) {
           delete parentValues[key];
