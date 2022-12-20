@@ -44,7 +44,6 @@ export const ImportButton = (props) => {
 
   const clear = () => {
     setImporting(false);
-    setImporting(false);
     setFileName('');
     setValues([]);
     setFileValidationNotifications([]);
@@ -92,7 +91,7 @@ export const ImportButton = (props) => {
     // some should probably, like deletedAt, should not be send by api
     const standardRemoveKeys = ['deletedAt', 'createdAt', 'updatedAt'];
     // certains keys should be parsed as object but exported as a JSON
-    const exceptionsObjectKeys = ['location'];
+    const exceptionsObjectKeys = ['location', 'tags'];
 
     const removeKeys = addRemoveKeys ? standardRemoveKeys.concat(addRemoveKeys) : standardRemoveKeys;
     const arrayKeys = ['images'];
@@ -100,12 +99,13 @@ export const ImportButton = (props) => {
     const cleanUp = function (value, key, parentValues) {
       if (value && typeof value === 'object' && !exceptionsObjectKeys.includes(key)) {
 
-        Object.keys(value).forEach((key) => {
+        const keys = Object.keys(value);
+        for (const key of keys) {
           // in case value is empty ont send it, many values will fail on empty string
           // for instance int types
           // this might cause issue when wanting to empty a field
           cleanUp(value[key], key, value)
-        });
+        };
       } else {
         if (!value || removeKeys.includes(key)) {
           delete parentValues[key];
@@ -114,7 +114,6 @@ export const ImportButton = (props) => {
     }
 
     cleanUp(value, null)
-
     return value;
   }
 
@@ -122,7 +121,10 @@ export const ImportButton = (props) => {
     const callback = (value) => {
       // add Id key to remove
       value = prepareData(value, ['id']);
-      return dataProvider.create(resource, { data: value })
+      if(value.tags) {
+        value.tags = value.tags.map(tag => tag.id);
+      }
+      return dataProvider.create(resource, { data: value });
     };
 
     handleSubmit(callback);
@@ -131,6 +133,9 @@ export const ImportButton = (props) => {
   const handleSubmitOverwrite = async () => {
     const callback = (value) => {
       value = prepareData(value);
+      if(value.tags) {
+        value.tags = value.tags.map(tag => tag.id);
+      }
       return dataProvider.update(resource, { id: value.id, data: value });
     }
 
