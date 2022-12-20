@@ -83,7 +83,7 @@ export default class PdfDocDefinition {
                     margin: [0,0,0,4]
                 }:null,
                 idea.tags? {
-                    text: `Tags: ${idea.tags.map(tag => tag.name).join(', ')}`,
+                    text: `Tags: ${idea.tags}`,
                     margin: [0,0,0,4]
                 }:null,
             );

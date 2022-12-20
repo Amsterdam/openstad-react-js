@@ -72,6 +72,10 @@ const exporter = async ( rows, type = 'csv' ) => {
       // delete rowForExport.user;
     }
 
+    if(rowForExport.tags) {
+      rowForExport.tags = rowForExport.tags.map(tag => tag.name).join(", ");
+    }
+
     rowForExport.location = rowForExport.location ? JSON.stringify(rowForExport.location) : ''; // add a field
     // rowForExport.extraData = JSON.stringify(rowForExport.extraData || {})
 
@@ -86,9 +90,10 @@ const exporter = async ( rows, type = 'csv' ) => {
     let filename = "ideas.xlsx";
     let ws_name = "plannen";
     
-    let data = rowsForExport;
+    let data = [...rowsForExport];
     let wb = XLSX.utils.book_new()
     let ws = XLSX.utils.json_to_sheet(data);
+
     XLSX.utils.book_append_sheet(wb, ws, ws_name);
 
     XLSX.writeFile(wb, filename);
@@ -101,9 +106,7 @@ const exporter = async ( rows, type = 'csv' ) => {
     jsonExport(rowsForExport, {headers: ['id', 'title', 'description']}, (err, csv) => {
       downloadCSV(csv, 'ideas');
     });
-    
   }
-
 };
 
 const Empty = (props) => {
