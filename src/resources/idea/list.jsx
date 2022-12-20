@@ -74,7 +74,7 @@ const exporter = async ( rows, type = 'csv' ) => {
 
     // To be able to import tags we will need to keep knowledge of the tag id
     if(rowForExport.tags) {
-      if(type === 'xslx' || type !== 'pdf') {
+      if(type !== 'pdf') {
         rowForExport.tags = JSON.stringify(rowForExport.tags);
       } else {
         rowForExport.tags = rowForExport.tags.map(tag => tag.name).join(", ");
