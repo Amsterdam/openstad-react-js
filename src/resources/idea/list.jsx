@@ -72,8 +72,13 @@ const exporter = async ( rows, type = 'csv' ) => {
       // delete rowForExport.user;
     }
 
+    // To be able to import tags we will need to keep knowledge of the tag id
     if(rowForExport.tags) {
-      rowForExport.tags = rowForExport.tags.map(tag => tag.name).join(", ");
+      if(type === 'xslx' || type !== 'pdf') {
+        rowForExport.tags = JSON.stringify(rowForExport.tags);
+      } else {
+        rowForExport.tags = rowForExport.tags.map(tag => tag.name).join(", ");
+      }
     }
 
     rowForExport.location = rowForExport.location ? JSON.stringify(rowForExport.location) : ''; // add a field
