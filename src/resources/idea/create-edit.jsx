@@ -58,7 +58,7 @@ const Form = (props) => (
       >
           <AutocompleteInput optionText="email" />
       </ReferenceInput>
-      <TextInput minLength={10} source="title" variant="outlined" fullWidth/>
+      <TextInput source="title" variant="outlined" fullWidth/>
       <TextInput source="summary" options={{ multiLine: true }} variant="outlined" fullWidth validate={[required()]} />
       <TextInput multiline source="description" variant="outlined" fullWidth validate={[required()]}/>
       <ReferenceArrayInput label="tags" source="tags" reference="tag" variant="outlined">
