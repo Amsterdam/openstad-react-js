@@ -67,9 +67,30 @@ export const ImportButton = (props) => {
     Promise.all(
       values.map((value) => callback(value).catch((error, response) => {
         var valueKeys = Object.keys(value);
+        var formattedFirstValue  = valueKeys[0] && value[valueKeys[0]];
+        var formattedSecondValue = valueKeys[1] && value[valueKeys[1]];
         // add first info rows for more information what row failed
-        var formattedFirstValue =  valueKeys[0] && value[valueKeys[0]] ? `${valueKeys[0]}: ${value[valueKeys[0]].slice(0, 25)}` : '';
-        var formattedSecondValue =  valueKeys[1] && value[valueKeys[1]] ? `${valueKeys[1]}: ${value[valueKeys[1]].slice(0, 25)}` : '';
+
+        if(formattedFirstValue) {
+          if(Array.isArray(value[valueKeys[0]]) || typeof value[valueKeys[0]] ==='string') {
+            formattedFirstValue = `${valueKeys[0]} : ${value[valueKeys[0]].slice(0, 25)}` 
+          } else {
+            formattedFirstValue = `${valueKeys[0]}: ${value[valueKeys[0]]}`
+          }
+        } else {
+          formattedFirstValue = '';
+        }
+
+
+        if(formattedSecondValue) {
+          if(Array.isArray(value[valueKeys[1]]) || typeof value[valueKeys[1]] ==='string') {
+            formattedSecondValue = `${valueKeys[1]} : ${value[valueKeys[1]].slice(0, 25)}` 
+          } else {
+            formattedSecondValue = `${valueKeys[1]}: ${value[valueKeys[1]]}`
+          }
+        } else {
+          formattedSecondValue = '';
+        }
 
         apiValidationErrors.push({
           messageType: 'apiValidationError',
@@ -91,7 +112,7 @@ export const ImportButton = (props) => {
     // some should probably, like deletedAt, should not be send by api
     const standardRemoveKeys = ['deletedAt', 'createdAt', 'updatedAt'];
     // certains keys should be parsed as object but exported as a JSON
-    const exceptionsObjectKeys = ['location', 'tags'];
+    const exceptionsObjectKeys = ['location'];
 
     const removeKeys = addRemoveKeys ? standardRemoveKeys.concat(addRemoveKeys) : standardRemoveKeys;
     const arrayKeys = ['images'];
@@ -120,9 +141,8 @@ export const ImportButton = (props) => {
     const callback = (value) => {
       // add Id key to remove
       value = prepareData(value, ['id']);
-      if(value.tags) {
-        value.tags = value.tags.map(tag => tag.id);
-      }
+      value.tags = value.tags ? value.tags.split(",").map(name => name.trim()) : [];
+      value.throughImport = true;
       return dataProvider.create(resource, { data: value });
     };
 
@@ -132,9 +152,8 @@ export const ImportButton = (props) => {
   const handleSubmitOverwrite = async () => {
     const callback = (value) => {
       value = prepareData(value);
-      if(value.tags) {
-        value.tags = value.tags.map(tag => tag.id);
-      }
+      value.tags = value.tags ? value.tags.split(",").map(name => name.trim()) : [];
+      value.throughImport = true;
       return dataProvider.update(resource, { id: value.id, data: value });
     }
 

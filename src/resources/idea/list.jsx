@@ -72,13 +72,8 @@ const exporter = async ( rows, type = 'csv' ) => {
       // delete rowForExport.user;
     }
 
-    // To be able to import tags we will need to keep knowledge of the tag id
     if(rowForExport.tags) {
-      if(type !== 'pdf') {
-        rowForExport.tags = JSON.stringify(rowForExport.tags);
-      } else {
-        rowForExport.tags = rowForExport.tags.map(tag => tag.name).join(", ");
-      }
+      rowForExport.tags = rowForExport.tags.map(tag => tag.name).join(", ");
     }
 
     rowForExport.location = rowForExport.location ? JSON.stringify(rowForExport.location) : ''; // add a field
@@ -88,8 +83,7 @@ const exporter = async ( rows, type = 'csv' ) => {
 
   });
   let parsed = parseRowsForExport(rowsForExport);
-  rowsForExport = parsed.rowsForExport;
-  
+
   if (type == 'xlsx') {
     
     let filename = "ideas.xlsx";
@@ -104,9 +98,10 @@ const exporter = async ( rows, type = 'csv' ) => {
     XLSX.writeFile(wb, filename);
 
   } else if(type == 'pdf'){
+    rowsForExport = parsed.rowsForExport.filter((idea) => idea.publishDate);
     const docDefinition = await PdfDocDefinition.createDefinition(rowsForExport);
     pdfMake.createPdf(docDefinition).print({}, window.open('', '_blank'));
-  }else {
+  } else {
 
     jsonExport(rowsForExport, {headers: ['id', 'title', 'description']}, (err, csv) => {
       downloadCSV(csv, 'ideas');
