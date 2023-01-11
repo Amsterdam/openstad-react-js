@@ -142,7 +142,6 @@ export const ImportButton = (props) => {
       // add Id key to remove
       value = prepareData(value, ['id']);
       value.tags = value.tags ? value.tags.split(",").map(name => name.trim()) : [];
-      value.changeTagNamesToIds = true;
       return dataProvider.create(resource, { data: value });
     };
 
@@ -153,7 +152,6 @@ export const ImportButton = (props) => {
     const callback = (value) => {
       value = prepareData(value);
       value.tags = value.tags ? value.tags.split(",").map(name => name.trim()) : [];
-      value.changeTagNamesToIds = true;
       return dataProvider.update(resource, { id: value.id, data: value });
     }
 
