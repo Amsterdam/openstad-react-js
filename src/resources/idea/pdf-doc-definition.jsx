@@ -2,9 +2,8 @@ export default class PdfDocDefinition {
 
     static async createDefinition(ideas) {
         const images = {};
-        const publishedIdeas = ideas.filter((idea) => idea.publishDate);
 
-        publishedIdeas.forEach(idea => {
+        ideas.forEach(idea => {
             try {
                 if(idea['extraData.images'] && idea['extraData.images'] !== '[]') {
                     images['image'+ idea.id] = JSON.parse(idea['extraData.images'])[0];
@@ -28,9 +27,9 @@ export default class PdfDocDefinition {
             images
         };
 
-        await this._setResolvedLocation(publishedIdeas);
+        await this._setResolvedLocation(ideas);
         
-        publishedIdeas.forEach((idea, index) => {
+        ideas.forEach((idea, index) => {
             result.content.push(
                 {
                     text: idea.title,
@@ -83,7 +82,7 @@ export default class PdfDocDefinition {
                     margin: [0,0,0,4]
                 }:null,
                 idea.tags? {
-                    text: `Tags: ${idea.tags.map(tag => tag.name).join(', ')}`,
+                    text: `Tags: ${idea.tags}`,
                     margin: [0,0,0,4]
                 }:null,
             );
