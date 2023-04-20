@@ -1,7 +1,7 @@
 import React, {Fragment, cloneElement, useState, useEffect} from 'react';
 import {
   Datagrid, Filter, DateField, EditButton, ImageField, TextInput, TextField, TopToolbar,
-  downloadCSV, useListContext, BulkDeleteButton, SimpleForm, useRecordContext
+  downloadCSV, useListContext, BulkDeleteButton, SimpleForm, SaveButton
 } from 'react-admin';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -12,7 +12,6 @@ import {Button} from 'react-admin';
 import ContentCreate from '@material-ui/icons/Create';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   SelectInput,
   useUpdateMany,
@@ -58,11 +57,12 @@ const useStyles = makeStyles(
   {name: 'RaEmpty'}
 );
 
-const exporter = async ( rows, type = 'csv' ) => {
+const exporter = ( rows, type = 'csv' ) => {
 
   rows = [...rows];
 
   let rowsForExport = rows.map(row => {
+
     const {backlinks, author, ...rowForExport} = row; // omit backlinks and author
     if (rowForExport.can) {
       delete rowForExport.can;
@@ -258,15 +258,6 @@ const IdeaFilters = (props) => (
   </Filter>
 );
 
-const ExportRowButton = (props) => {
-  const record = useRecordContext();
-  return (  
-  <Button {...props} disabled={props.disabled(record)} onClick={() =>props.onClick(record)}>
-    <GetAppIcon />
-  </Button>);
-
-}
-
 export const IdeaList = (props) => {
   return (
     <Fragment>
@@ -288,8 +279,7 @@ export const IdeaList = (props) => {
           <TextField source="no"/>
           <DateField source="createdAt"/>
           <DateField emptyText='[concept]' source="publishDate"/>
-          <EditButton label='Edit' basePath="/idea"/>
-          <ExportRowButton disabled={(idea)=>!idea.publishDate} onClick={(idea) => {exporter([idea], 'pdf')}}/>
+          <EditButton basePath="/idea"/>
         </Datagrid>
       </List>
     </Fragment>

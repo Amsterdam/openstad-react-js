@@ -63,7 +63,6 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => (
 
       if ( resource == 'idea' ) {
         query.includeVoteCount = 1;
-        query.includeTags = 1;
         // query.includeArguments = 1;
       }
 
@@ -83,6 +82,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => (
             total: json.metadata.totalCount
           };
         }
+
         return result;
       });
     },
@@ -216,12 +216,12 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => (
     // Ideas-with-Arguments specific calls ----------------------------------------------------------------------------------------------------
 
     getIdeasWithArguments: (params) => {
-      const url = `${apiUrl}/idea?includeVoteCount=1&includeArguments=1&includeUser=1&includeTags=1`;
+      const url = `${apiUrl}/idea?includeVoteCount=1&includeArguments=1&includeUser=1`;
       return httpClient(url).then(({ headers, json }) => {
         let result = {
           data: json,
           total: json.length
-        };
+        };;
         return result;
       });
     },
