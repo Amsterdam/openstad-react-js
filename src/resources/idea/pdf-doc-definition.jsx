@@ -1,6 +1,6 @@
 export default class PdfDocDefinition {
 
-    static createDefinition(ideas) {
+    static async createDefinition(ideas) {
         const images = {};
         ideas.forEach(idea => {
 
