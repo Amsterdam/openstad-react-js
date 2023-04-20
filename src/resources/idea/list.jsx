@@ -57,7 +57,7 @@ const useStyles = makeStyles(
   {name: 'RaEmpty'}
 );
 
-const exporter = ( rows, type = 'csv' ) => {
+const exporter = async ( rows, type = 'csv' ) => {
 
   rows = [...rows];
 
@@ -72,6 +72,10 @@ const exporter = ( rows, type = 'csv' ) => {
       // delete rowForExport.user;
     }
 
+    if(rowForExport.tags) {
+      rowForExport.tags = rowForExport.tags.map(tag => tag.name).join(", ");
+    }
+
     rowForExport.location = rowForExport.location ? JSON.stringify(rowForExport.location) : ''; // add a field
     // rowForExport.extraData = JSON.stringify(rowForExport.extraData || {})
 
@@ -79,31 +83,30 @@ const exporter = ( rows, type = 'csv' ) => {
 
   });
   let parsed = parseRowsForExport(rowsForExport);
-  rowsForExport = parsed.rowsForExport;
-  
+
   if (type == 'xlsx') {
     
     let filename = "ideas.xlsx";
     let ws_name = "plannen";
     
-    let data = rowsForExport;
+    let data = [...rowsForExport];
     let wb = XLSX.utils.book_new()
     let ws = XLSX.utils.json_to_sheet(data);
+
     XLSX.utils.book_append_sheet(wb, ws, ws_name);
 
     XLSX.writeFile(wb, filename);
 
   } else if(type == 'pdf'){
-    const docDefinition = PdfDocDefinition.createDefinition(rowsForExport);
+    rowsForExport = parsed.rowsForExport.filter((idea) => idea.publishDate);
+    const docDefinition = await PdfDocDefinition.createDefinition(rowsForExport);
     pdfMake.createPdf(docDefinition).print({}, window.open('', '_blank'));
-  }else {
+  } else {
 
     jsonExport(rowsForExport, {headers: ['id', 'title', 'description']}, (err, csv) => {
       downloadCSV(csv, 'ideas');
     });
-    
   }
-
 };
 
 const Empty = (props) => {
