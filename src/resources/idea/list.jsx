@@ -57,7 +57,7 @@ const useStyles = makeStyles(
   {name: 'RaEmpty'}
 );
 
-const exporter = ( rows, type = 'csv' ) => {
+const exporter = async ( rows, type = 'csv' ) => {
 
   rows = [...rows];
 
