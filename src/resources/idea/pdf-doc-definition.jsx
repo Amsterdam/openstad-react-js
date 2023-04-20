@@ -98,4 +98,22 @@ export default class PdfDocDefinition {
         });
         return result;
     }
+    
+    static async _setResolvedLocation(ideas) {
+        for (const idea of ideas) {
+            let location = null;
+            if(idea.location) {
+                try {
+                    location = JSON.parse(idea.location);
+                } catch(error) {
+                    console.error(`Could not translate location: ${error}`);
+                }    
+                if(location) {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=geojson&addressdetails=1&accept-language=nl&countrycodes=nl&lat=${location.coordinates[0]}&lon=${location.coordinates[1]}`);
+                    const resolvedLocation = await response.json();
+                    idea.resolvedLocation = {...resolvedLocation?.features?.[0]?.properties?.address};
+                }
+            }
+        }
+    }
 };
