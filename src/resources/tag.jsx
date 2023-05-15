@@ -55,8 +55,8 @@ const TagTitle = ({ record }) => {
 export const TagEdit = (props) => (
     <Edit mutationMode="pessimistic" title={<TagTitle />} {...props}>
         <SimpleForm>
-          <TextInput source="name" label="Tag name" variant="outlined" />
-          <TextInput source="type" required="false" label="Tag type" variant="outlined" />
+          <TextInput isRequired={true} source="name" label="Tag name" variant="outlined" />
+          <TextInput isRequired={false} source="type" label="Tag type" variant="outlined" />
         </SimpleForm>
     </Edit>
 );
@@ -72,8 +72,8 @@ export const TagCreate = (props) => {
       refresh()
   }}>
         <SimpleForm>
-          <TextInput source="name" label="Tag name" variant="outlined" />
-          <TextInput source="type" required="false" label="Tag type" variant="outlined" />
+          <TextInput isRequired={true} source="name" label="Tag name" variant="outlined" />
+          <TextInput isRequired={false} source="type" label="Tag type" variant="outlined" />
         </SimpleForm>
     </Create>
 };
