@@ -215,8 +215,8 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => (
 
     // Ideas-with-Arguments specific calls ----------------------------------------------------------------------------------------------------
 
-    getIdeasWithArguments: (params) => {
-      const url = `${apiUrl}/idea?includeVoteCount=1&includeArguments=1&includeUser=1`;
+    getIdeasWithArgumentsAndLikes: (params) => {
+      const url = `${apiUrl}/idea?includeVoteCount=1&includeArguments=1&includeVotes=1&includeUser=1&includeUserVote=1`;
       return httpClient(url).then(({ headers, json }) => {
         let result = {
           data: json,
