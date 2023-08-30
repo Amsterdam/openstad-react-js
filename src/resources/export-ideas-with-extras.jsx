@@ -111,7 +111,6 @@ let exporter = async function(data, id, type) {
 
       ideaLine = undefined;
       ideaLines = ideaLines.concat(argLines);
-      console.log({ideaLines});
       body = body.concat(ideaLines);
     });
 
