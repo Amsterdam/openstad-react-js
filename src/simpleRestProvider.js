@@ -216,17 +216,24 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => (
     // Ideas-with-Arguments specific calls ----------------------------------------------------------------------------------------------------
 
     getIdeasWithArgumentsAndLikes: (params) => {
-      console.log({params});
+      const filter = {};
+      
+      if(params.id) {
+        filter.id = [params.id];
+      }
+
+      if(params.status) {
+        filter.status = [params.status];
+      }
 
       const query = {
-        ids: [params.id],
         includeUser: 1,
         includeVoteCount: 1,
         includeArguments: 1,
         includeVotes: 1,
+        filter: JSON.stringify(filter)
       };
-
-console.log({query});
+      
       const url = `${apiUrl}/idea?${stringify(query)}`;
       return httpClient(url, {}).then(({ headers, json }) => {
         let result = {
