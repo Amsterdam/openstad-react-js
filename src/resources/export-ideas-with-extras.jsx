@@ -3,6 +3,8 @@ import React from 'react';
 import { Button, downloadCSV } from 'react-admin';
 import jsonExport from 'jsonexport/dist';
 import Icon from "@material-ui/icons/ImportExport";
+import DownloadIcon from '@material-ui/icons/GetApp';
+
 import { useDataProvider } from 'react-admin';
 import XLSX from 'xlsx';
 
@@ -144,7 +146,7 @@ let exporter = async function(data, id, type) {
   return (
     <>
       <Button label={props.label} onClick={data => exporter(data, props.id, props.extension)}>
-        <Icon/>
+        <DownloadIcon />
       </Button>
     </>);
 }
