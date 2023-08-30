@@ -6,13 +6,25 @@ import Icon from "@material-ui/icons/ImportExport";
 import { useDataProvider } from 'react-admin';
 import XLSX from 'xlsx';
 
-export const ExportButtons = function(props) {
+import {
+  useListContext,
+} from 'ra-core';
 
+export const ExportButton = function(props) {
   const dataProvider = useDataProvider();
+  const {
+    filter,
+    filterValues,
+    currentSort,
+    exporter: exporterFromContext,
+    total,
+} = useListContext(props);
 
-  let exporter = async function(data, id, type) {
+let exporter = async function(data, id, type) {
 
-    let json = await dataProvider.getIdeasWithArgumentsAndLikes({})
+    let json = await dataProvider.getIdeasWithArgumentsAndLikes({...filter,
+      ...filterValues});
+
     let ideas = json.data;
 
     const exportHeaders = [
@@ -53,48 +65,47 @@ export const ExportButtons = function(props) {
         }
       });
 
-      const ideaVotes = idea.votes || [];
-      const ideaArguments = (idea.argumentsFor || []).concat((idea.argumentsAgainst || []));
         const argLines = [];
 
-        // Make a line in the csv for each argument of an idea
-        ideaArguments.sort( (a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() ).forEach((arg) => {
-          let argLine = ideaLine? Object.assign({}, ideaLine): {};
-          argLine.argument_userId = arg.userId;
-          argLine.argument_sentiment = arg.sentiment;
-          argLine.argument_description = arg.description.replace(/\r|\n/g, '\\n');
-          argLine.argument_username = arg.user.firstName + ' ' + arg.user.lastName;
-          if (arg.reactions && arg.reactions.length) {
-            arg.reactions.forEach((reaction) => {
-              let reactionLine = argLine || {};
-              argLine = undefined;
-              reactionLine.reaction_description = reaction.description.replace(/\r|\n/g, '\\n');
-              reactionLine.reaction_username = reaction.user.firstName + ' ' + reaction.user.lastName;
-              argLines.push(reactionLine);
-            });
-          }
-          if (argLine) argLines.push(argLine); // no reactions have been added
-        });
-
+        if(props.withArguments) {
+          const ideaArguments = (idea.argumentsFor || []).concat((idea.argumentsAgainst || []));
+          // Make a line in the csv for each argument of an idea
+          ideaArguments.sort( (a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() ).forEach((arg) => {
+            let argLine = ideaLine? Object.assign({}, ideaLine): {};
+            argLine.argument_userId = arg.userId;
+            argLine.argument_sentiment = arg.sentiment;
+            argLine.argument_description = arg.description.replace(/\r|\n/g, '\\n');
+            argLine.argument_username = arg.user.firstName + ' ' + arg.user.lastName;
+            if (arg.reactions && arg.reactions.length) {
+              arg.reactions.forEach((reaction) => {
+                let reactionLine = argLine || {};
+                argLine = undefined;
+                reactionLine.reaction_description = reaction.description.replace(/\r|\n/g, '\\n');
+                reactionLine.reaction_username = reaction.user.firstName + ' ' + reaction.user.lastName;
+                argLines.push(reactionLine);
+              });
+            }
+            if (argLine) argLines.push(argLine); // no reactions have been added
+          });
+        }
       
-        // Make a line in the csv for each vote of an idea
-        ideaVotes.forEach(vote => {
-          let argLine = ideaLine? Object.assign({}, ideaLine): {};
-          argLine.vote_userId = vote.userId;
-          argLine.vote_opinion= vote.opinion;
-          argLine.vote_userId = vote.userId;
-          if (argLine) argLines.push(argLine);
-        });
-    
+        if(props.withVotes) {
+          const ideaVotes = idea.votes || [];
+          // Make a line in the csv for each vote of an idea
+          ideaVotes.forEach(vote => {
+            let argLine = ideaLine? Object.assign({}, ideaLine): {};
+            argLine.vote_userId = vote.userId;
+            argLine.vote_opinion= vote.opinion;
+            argLine.vote_userId = vote.userId;
+            if (argLine) argLines.push(argLine);
+          });
+        }
 
         ideaLine = undefined;
         ideaLines = ideaLines.concat(argLines);
 
-      
       if (ideaLine) ideaLines.push(ideaLine); // no arguments have been added
       body = body.concat(ideaLines);
-      
-      
     });
 
     let filename = 'ideas-with-arguments';
@@ -127,10 +138,7 @@ export const ExportButtons = function(props) {
 
   return (
     <>
-      <Button label="Export ideas with arguments csv" onClick={data => exporter(data, props.id, 'csv')}>
-        <Icon/>
-      </Button>
-      <Button label="Export ideas with arguments xlsx" onClick={data => exporter(data, props.id, 'xlsx')}>
+      <Button label={props.label} onClick={data => exporter(data, props.id, props.extension)}>
         <Icon/>
       </Button>
     </>);

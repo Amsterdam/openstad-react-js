@@ -22,6 +22,7 @@ import {
   Pagination
 } from 'react-admin';
 import {CreateButton, ExportButton} from 'ra-ui-materialui';
+import {ExportButton as CustomExportButton} from '../export-ideas-with-extras.jsx';
 import jsonExport from 'jsonexport/dist';
 import {CustomList as List} from '../../components/CustomList/index.jsx';
 import { parseRowsForExport } from '../../utils/export.jsx';
@@ -159,6 +160,20 @@ export const ListActions = props => {
         context: 'button',
       })}
       <CreateButton basePath={basePath}/>
+      <CustomExportButton 
+        label="Full export as csv"
+        withArguments={true}
+        withVotes={true}
+        extension="csv"
+        filter={{...filterValues, ...permanentFilter}}
+      />
+      <CustomExportButton 
+        label="Full export as xlsx"
+        withArguments={true}
+        withVotes={true}
+        extension="xlsx"
+        filter={{...filterValues, ...permanentFilter}}
+      />
       <ExportButton
         exporter={rows => exporter(rows, 'csv')}
         disabled={total === 0}
