@@ -63,7 +63,6 @@ export const ImportButton = (props) => {
     setImporting(true);
     let apiValidationErrors = [];
     const ideas = bundleArgumentsAndVotesWithIdea(values);
-    console.log({ideas});
 
     Promise.all(
       ideas.map((value) => callback(value).catch((error, response) => {
