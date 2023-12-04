@@ -134,6 +134,7 @@ export const ImportButton = (props) => {
     }
 
     cleanUp(value, null)
+    value['publishDate'] = Date.now();
     return value;
   }
 
