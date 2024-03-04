@@ -61,6 +61,8 @@ const Form = (props) => (
       <TextInput source="title" variant="outlined" fullWidth/>
       <TextInput source="summary" options={{ multiLine: true }} variant="outlined" fullWidth validate={[required()]} />
       <TextInput multiline source="description" variant="outlined" fullWidth validate={[required()]}/>
+      <TextInput source="budget" variant="outlined" fullWidth/>
+      <TextInput placeholder='The id of the original idea' label="Original idea-id" source="extraData.originalId" variant="outlined" fullWidth/>
       <ReferenceArrayInput label="tags" source="tags" reference="tag" variant="outlined">
         <SelectArrayInput optionText="name"/>
       </ReferenceArrayInput>
