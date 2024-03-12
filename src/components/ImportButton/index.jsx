@@ -61,11 +61,11 @@ export const ImportButton = (props) => {
 
   const handleSubmit = (callback, afterSucces) => {
     setImporting(true);
-
     let apiValidationErrors = [];
+    const ideas = bundleArgumentsAndVotesWithIdea(values);
 
     Promise.all(
-      values.map((value) => callback(value).catch((error, response) => {
+      ideas.map((value) => callback(value).catch((error, response) => {
         var valueKeys = Object.keys(value);
         var formattedFirstValue  = valueKeys[0] && value[valueKeys[0]];
         var formattedSecondValue = valueKeys[1] && value[valueKeys[1]];
@@ -138,15 +138,67 @@ export const ImportButton = (props) => {
     return value;
   }
 
-  const handleSubmitCreate = async () => {
-    const callback = (value) => {
-      // add Id key to remove
-      value = prepareData(value, ['id']);
-      value.tags = value.tags ? value.tags.split(",").map(name => name.trim()) : [];
-      return dataProvider.create(resource, { data: value });
-    };
 
-    handleSubmit(callback);
+  function bundleArgumentsAndVotesWithIdea(values) {
+    const idMapping = new Map();
+
+    values.forEach(value => {
+      if(idMapping.has(value.id)) {
+        const idea = idMapping.get(value.id);
+
+        // Add argument to list
+        if(value.argument_description) {
+          idea.arguments.push({
+            userId: value.argument_userId, 
+            description: value.argument_description,
+            sentiment: value.argument_sentiment, 
+          });
+        }
+        
+        // Add vote to list
+        if(value.vote_userId) {
+          idea.votes.push({
+            userId: value.vote_userId,
+            opinion: value.vote_opinion,
+          })
+        }
+        idMapping.set(value.id, idea);
+      } else {
+        value.arguments = [];
+        value.votes = [];
+
+        if(value.argument_description) {
+          value.arguments.push({
+            userId: value.argument_userId, 
+            description: value.argument_description,
+            sentiment: value.argument_sentiment, 
+          });
+        }
+
+        if(value.vote_userId) {
+          value.votes.push({
+            userId: value.vote_userId,
+            opinion: value.vote_opinion,
+          })
+        }
+        idMapping.set(value.id, value);
+      }
+    });
+    return Array.from(idMapping.values());
+  }
+
+  const handleSubmitCreate = async () => {
+      const callback = (value) => {
+        // add Id key to remove
+        value = prepareData(value, ['id']);
+        value.tags = value.tags ? value.tags.split(",").map(name => name.trim()) : [];
+  
+        console.log({value});
+        return dataProvider.create(resource, { data: value });
+      };
+  
+      handleSubmit(callback);
+    
   };
 
   const handleSubmitOverwrite = async () => {
